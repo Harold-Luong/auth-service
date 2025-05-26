@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: Auth Service
+  profiles:
+    active: docker
+
+  datasource:
+#    change 'localhost' to 'db' when run docker
+    url: jdbc:mysql://localhost:3306/auth_db?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+
+  security:
+    jwt:
+      secret: xE5g!8Kz#mP2$vY9qL*1WnF7cR3tH6bU1
+      expiration: 900000            # 15 minutes
+      refresh-expiration: 604800000 # 7 days
+      header: Authorization
+      prefix: Bearer
+    cors:
+      allowed-origins: http://localhost:8080
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org.springframework.web: DEBUG

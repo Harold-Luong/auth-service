@@ -1,0 +1,26 @@
+services:
+  auth-service:
+    build: .
+    ports:
+      - "8081:8081"
+    container_name: auth-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/auth_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    container_name: mysql
+    ports:
+    - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
