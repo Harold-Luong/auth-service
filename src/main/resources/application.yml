@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: docker
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/change-password/**
+          filters:
+            - name: JwtAuthorizationFilter
+          metadata:
+            required-roles: [ ADMIN, USER ]
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - name: JwtAuthorizationFilter
+          metadata:
+            required-roles: [USER]
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - name: JwtAuthorizationFilter
+          metadata:
+            required-roles: [ ADMIN, USER ]
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  datasource:
+#   change 'localhost' to 'db' when run docker
+    url: jdbc:mysql://localhost:3306/auth_db?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  security:
+    jwt:
+      secret: xE5g!8Kz#mP2$vY9qL*1WnF7cR3tH6bU1
+      expiration: 9000000            # 150 minutes (test)
+      refresh-expiration: 604800000  # 7 days
+      header: Authorization
+      prefix: Bearer
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+      allowed-methods:
+        - GET
+        - PUT
+        - POST
+        - DELETE
+      allowed-Headers:
+        - Authorization
+        - Content-Type
+
+server:
+  port: 8081
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+
+logging:
+  level:
+    org.springframework.web: DEBUG

@@ -1,0 +1,42 @@
+services:
+#  auth-service:
+#    build: .
+#    ports:
+#      - "8081:8081"
+#    container_name: auth-service
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/auth_db
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: root
+#    depends_on:
+#      - db
+#
+#  db:
+#    image: mysql:8
+#    container_name: mysql
+#    ports:
+#    - "3307:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: auth_db
+#    volumes:
+#      - mysql_data:/var/lib/mysql
+#  volumes:
+#  mysql_data:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
