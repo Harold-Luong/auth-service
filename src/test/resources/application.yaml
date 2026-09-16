@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:auth_test;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+jwt:
+  type: Bearer
+  access-token-expiration: 15m
+  refresh-token-expiration: 30d
+  access-secret: YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE=
+  refresh-secret: YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmI=
+  access-issuer: auth-service
+  access-audience: ecommerce-api
+  refresh-issuer: auth-service
+  refresh-audience: ecommerce-api

@@ -1,0 +1,52 @@
+spring:
+    application:
+        name: auth-service
+    datasource:
+        url: jdbc:postgresql://localhost:5432/auth_db
+        username: auth_user
+        password: auth_password
+        driver-class-name: org.postgresql.Driver
+
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        show-sql: true
+
+server:
+    forward-headers-strategy: none
+
+springdoc:
+    api-docs:
+        enabled: true
+        path: /v3/api-docs
+    swagger-ui:
+        enabled: true
+        path: /swagger-ui.html
+        url: /openapi.yaml
+        disable-swagger-default-url: true
+        operations-sorter: method
+        tags-sorter: alpha
+        display-request-duration: true
+        filter: true
+    packages-to-scan:
+        - com.example.authservice.controller
+    paths-to-match:
+        - /api/v1/auth/**
+
+auth:
+    login-throttle:
+        account-max-attempts: 10
+        ip-max-attempts: 50
+        window: 15m
+        max-keys: 10000
+
+jwt:
+    type: Bearer
+    access-token-expiration: 15m
+    refresh-token-expiration: 7d
+    access-secret: ${JWT_SECRET_ACCESS}
+    refresh-secret: ${JWT_SECRET_REFRESH}
+    access-issuer: auth-service
+    refresh-issuer: auth-service
+    access-audience: ecommerce-api-access
+    refresh-audience: ecommerce-api-refresh
